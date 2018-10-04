@@ -4,9 +4,10 @@
 #include <math.h>
 
 // The tolerance in chi for all the
-#define DISTANCES_TOLERANCE 1.0e-4
+#define DISTANCES_TOLERANCE 5.0e-7
+#define DM_TOLERANCE 1.0E-3
 
-CTEST_DATA(distances) {
+CTEST_DATA(distances_cosmomad_lowz) {
   double Omega_c;
   double Omega_b;
   double h;
@@ -69,7 +70,7 @@ static void read_dm_test_file(double z[6], double dm[5][6])
 
 // Set up the cosmological parameters to be used in each of the
 // models
-CTEST_SETUP(distances) {
+CTEST_SETUP(distances_cosmomad_lowz) {
   // Values that are the same for all 5 models
   data->Omega_c = 0.25;
   data->Omega_b = 0.05;
@@ -100,7 +101,7 @@ CTEST_SETUP(distances) {
   read_chi_test_file(data->z, data->chi);
 }
 
-static void compare_distances(int model, struct distances_data * data)
+static void compare_distances(int model, struct distances_cosmomad_lowz_data * data)
 {
   int status=0;
   // Make the parameter set from the input data
@@ -110,7 +111,8 @@ static void compare_distances(int model, struct distances_data * data)
 						data->w_0[model], data->w_a[model],
 						data->h, data->A_s, data->n_s,-1,-1,-1,-1,NULL,NULL, &status);
   
-  params.Omega_g=0;
+  params.Omega_g=0; //enforce no radiation
+  params.Omega_l = 1.-params.Omega_m-params.Omega_k; //reomcpute Omega_l without radiation
   
   // Make a cosmology object from the parameters with the default configuration
   ccl_cosmology * cosmo = ccl_cosmology_create(params, default_config);
@@ -129,7 +131,7 @@ static void compare_distances(int model, struct distances_data * data)
         double dm_ij=ccl_distance_modulus(cosmo,a, &status);
         if (status) printf("%s\n",cosmo->status_message);
         //NOTE tolerances are different!
-        absolute_tolerance = 10*DISTANCES_TOLERANCE*data->dm[model][j];
+        absolute_tolerance = DM_TOLERANCE*data->dm[model][j];
         if (fabs(absolute_tolerance)<1e-4) absolute_tolerance = 1e-4;
         ASSERT_DBL_NEAR_TOL(data->dm[model][j], dm_ij, absolute_tolerance);
     }
@@ -138,27 +140,27 @@ static void compare_distances(int model, struct distances_data * data)
   ccl_cosmology_free(cosmo);
 }
 
-CTEST2(distances, model_1) {
+CTEST2(distances_cosmomad_lowz, model_1) {
   int model = 0;
   compare_distances(model, data);
 }
 
-CTEST2(distances, model_2) {
+CTEST2(distances_cosmomad_lowz, model_2) {
   int model = 1;
   compare_distances(model, data);
 }
 
-CTEST2(distances, model_3) {
+CTEST2(distances_cosmomad_lowz, model_3) {
   int model = 2;
   compare_distances(model, data);
 }
 
-CTEST2(distances, model_4) {
+CTEST2(distances_cosmomad_lowz, model_4) {
   int model = 3;
   compare_distances(model, data);
 }
 
-CTEST2(distances, model_5) {
+CTEST2(distances_cosmomad_lowz, model_5) {
   int model = 4;
   compare_distances(model, data);
 }
