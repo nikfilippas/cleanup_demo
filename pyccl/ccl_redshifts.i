@@ -1,9 +1,9 @@
-%module ccl_lsst_specs
+%module ccl_redshifts
 
 %{
 /* put additional #include here */
 #include "../include/ccl_params.h"
-#include "../include/ccl_lsst_specs.h"
+#include "../include/ccl_redshifts.h"
 %}
 
 // Enable vectorised arguments for arrays
@@ -13,7 +13,7 @@
 };
 %apply (int DIM1, double* ARGOUT_ARRAY1) {(int nout, double* output)};
 
-%include "../include/ccl_lsst_specs.h"
+%include "../include/ccl_redshifts.h"
 
 %feature("pythonprepend") specs_bias_clustering_vec %{
     if numpy.shape(a) != (nout,):

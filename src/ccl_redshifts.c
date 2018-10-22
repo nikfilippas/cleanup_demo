@@ -8,7 +8,7 @@
 
 #include "ccl.h"
 #include "ccl_params.h"
-#include "ccl_lsst_specs.h"
+#include "ccl_redshifts.h"
 
 // ---- LSST redshift distributions & current specs -----
 // ---- Consider spline for input dN/dz - pending
@@ -235,7 +235,7 @@ static double ccl_specs_norm_integrand(double z, void* params)
   F.params = &valparams;
   int gslstatus = gsl_integration_cquad(&F, z_min, z_max, 0.0,ccl_gsl->INTEGRATION_DNDZ_EPSREL,workspace,&pz_int, NULL, NULL);
   if(gslstatus != GSL_SUCCESS) {
-    ccl_raise_gsl_warning(gslstatus, "ccl_lsst_specs.c: ccl_specs_norm_integrand():");
+    ccl_raise_gsl_warning(gslstatus, "ccl_redshifts.c: ccl_specs_norm_integrand():");
     *p->status|= gslstatus;
   }
   gsl_integration_cquad_workspace_free(workspace);
@@ -308,7 +308,7 @@ void ccl_specs_dNdz_tomog(double z, int dNdz_type, double bin_zmin, double bin_z
   F.params = &valparams;
   int gslstatus = gsl_integration_cquad(&F, bin_zmin, bin_zmax, 0.0,ccl_gsl->INTEGRATION_DNDZ_EPSREL,workspace,&numerator_integrand, NULL, NULL);
   if(gslstatus != GSL_SUCCESS) {
-    ccl_raise_gsl_warning(gslstatus, "ccl_lsst_specs.c: ccl_specs_norm_integrand():");
+    ccl_raise_gsl_warning(gslstatus, "ccl_redshifts.c: ccl_specs_norm_integrand():");
     *status |= gslstatus;
   }  
   gsl_integration_cquad_workspace_free(workspace);	
@@ -319,7 +319,7 @@ void ccl_specs_dNdz_tomog(double z, int dNdz_type, double bin_zmin, double bin_z
   F.params = &norm_p_val;
   gslstatus = gsl_integration_cquad(&F, Z_MIN_SOURCES, Z_MAX_SOURCES, 0.0,ccl_gsl->INTEGRATION_DNDZ_EPSREL,workspace,&denom_integrand, NULL, NULL);
   if(gslstatus != GSL_SUCCESS) {
-    ccl_raise_gsl_warning(gslstatus, "ccl_lsst_specs.c: ccl_specs_norm_integrand():");
+    ccl_raise_gsl_warning(gslstatus, "ccl_redshifts.c: ccl_specs_norm_integrand():");
     *status |= gslstatus;
   } 
   gsl_integration_cquad_workspace_free(workspace);

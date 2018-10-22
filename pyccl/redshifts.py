@@ -1,5 +1,5 @@
 """
-The functions in lsst_specs provide useful routines
+The functions in redshifts provide useful routines
 for making predictions for LSST-specific observables.
 These include routines for predicting the linear bias
 of the clustering sample, the dispersion of photometric
