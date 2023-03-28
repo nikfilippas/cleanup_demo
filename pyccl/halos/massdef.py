@@ -84,7 +84,7 @@ class MassDef(CCLHalosObject):
             If `None`, no c(M) relation will be attached to this mass
             definition (and hence one can't translate into other definitions).
     """
-    __repr_attrs__ = ("name",)
+    __repr_attrs__ = __eq_attrs__ = ("name",)
 
     def __init__(self, Delta, rho_type, c_m_relation=None):
         # Check it makes sense
@@ -286,3 +286,12 @@ def MassDefVir(c_m='Klypin11'):
         c_m (string): concentration-mass relation.
     """
     return MassDef('vir', 'critical', c_m_relation=c_m)
+
+
+def MassDefFof(c_m=None):
+    r""":math:`\Delta = \rm FoF` mass definition.
+
+    Args:
+        c_m (string): concentration-mass relation.
+    """
+    return MassDef('fof', 'matter', c_m_relation=c_m)
